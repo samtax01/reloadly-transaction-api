@@ -4,10 +4,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class TransactionApiApplication {
+public class TransactionApi {
 
 	public static void main(String[] args) {
-		SpringApplication.run(TransactionApiApplication.class, args);
+		SpringApplication.run(TransactionApi.class, args);
 	}
 
 }
+
+
