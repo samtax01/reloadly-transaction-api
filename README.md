@@ -9,7 +9,7 @@ Customer would be able to
 
 ### This project is created using
 - Java (Spring Boot)
-- Accessing Data with JPA
+- In-Memory Database with JPA
 - JUnit
 
 ### Running the application locally
