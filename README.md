@@ -1,9 +1,9 @@
 # Reloadly Transaction API
 
-This API is responsible for Customer Transaction (Requires Authorization token from Customer Account API).
+This API is responsible for Storing Customer's Transaction (Requires Authorization token from Customer Account API).
 
 Customer would be able to
-- Create Transaction (Authorization Token required)
+- Create Transaction (Authorization Token is required with a compatible email)
 - View Transactions
 - Get an email when transaction is created (Using Notification API).
 
@@ -12,6 +12,9 @@ Customer would be able to
 - Accessing Data with JPA
 - JUnit
 
+### Running the application locally
+- mvn clean package (To reinstall plugins)
+- mvn spring-boot:run (To start the project)
 
 ### Transaction Request:
 ```json
