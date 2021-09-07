@@ -20,14 +20,11 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class TransactionRequest {
 
-    @NotNull
     private String orderId;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     private TransactionStatus status;
 
-    @NotNull
     private String customerId;
 
     @NotNull
@@ -37,10 +34,8 @@ public class TransactionRequest {
     @Min(value=1, message = "cannot be less than 1")
     private BigDecimal amount;
 
-    @NotNull
     private String productName;
 
-    @NotNull
     private String productDescription;
 
     private String metaData;

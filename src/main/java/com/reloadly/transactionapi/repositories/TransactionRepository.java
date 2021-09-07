@@ -1,5 +1,6 @@
 package com.reloadly.transactionapi.repositories;
 
+import com.reloadly.transactionapi.configs.AuthenticationManager;
 import com.reloadly.transactionapi.configs.StaticData;
 import com.reloadly.transactionapi.helpers.CustomException;
 import com.reloadly.transactionapi.helpers.HttpRequest;
@@ -60,9 +61,9 @@ public class TransactionRepository {
     /**
      * Create Transaction
      */
-    public Mono<TransactionResponse> create(TransactionRequest request, String loggedInEmail) throws CustomException {
-        if(!request.getCustomerEmail().equals(loggedInEmail))
-            throw new CustomException(StaticData.invalidUser.replace("{email}", loggedInEmail), HttpStatus.UNAUTHORIZED);
+    public Mono<TransactionResponse> create(TransactionRequest request) throws CustomException {
+        if(!request.getCustomerEmail().equals(AuthenticationManager.currentUser.getUserName()))
+            throw new CustomException(StaticData.invalidUser.replace("{email}", AuthenticationManager.currentUser.getUserName()), HttpStatus.UNAUTHORIZED);
 
         Transaction transaction = modelMap.map(request, Transaction.class);
 
@@ -107,16 +108,26 @@ public class TransactionRepository {
      */
     @Async
     public void sendNotificationEmail(Transaction transaction){
+        log.info("Sending email to " + transaction.getCustomerEmail());
+
         var emailRequest = EmailRequest.builder()
-                .toEmail(transaction.getCustomerEmail())
+                .to(transaction.getCustomerEmail())
                 .subject(StaticData.transactionSuccessfulSubject)
-                .body(StaticData.transactionMailBody)
+                .body(StaticData.transactionMailBody +
+                        "\n\nTRANSACTION" +
+                        "\n---------------------------" +
+                        "\nTransaction Status : " + transaction.getStatus() +
+                        "\nTransaction Amount : " + transaction.getAmount()+
+                        "\nMade On : " + transaction.getCreatedAt()+
+                        "\nCustomer Id : " + transaction.getCustomerId())
                 .build();
+
         try{
             HttpRequest.make(mailApiLink, HttpMethod.POST, emailRequest, String.class).subscribe( x->log.info("Email sent successfully. " + x) );
         }catch (Exception ex){
             log.error("Unable to send email. " + ex.getMessage());
         }
+
     }
 
 

@@ -24,7 +24,6 @@ public class WebSecurityConfig {
     private final SecurityContextRepository securityContextRepository;
 
     private static final String[] SWAGGER_WHITELIST = {
-            // -- swagger ui
             "/v2/api-docs", "/swagger-resources", "/swagger-resources/**", "/configuration/ui",
             "/configuration/security", "/swagger-ui.html", "/webjars/**"
     };
@@ -40,12 +39,17 @@ public class WebSecurityConfig {
         return http
                 .exceptionHandling()
                 .authenticationEntryPoint((swe, e) -> Mono.fromRunnable(() -> {
-                    log.error("UNAUTHORIZED {}", swe.getResponse());
+
+                    log.error("unauthorized error {}", swe.getResponse());
                     swe.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+
                 })).accessDeniedHandler((swe, e) -> Mono.fromRunnable(() -> {
-                    log.error("FORBIDDEN {}", swe.getResponse());
+
+                    log.error("forbidden error {}", swe.getResponse());
                     swe.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
-                })).and()
+
+                }))
+                .and()
                 .csrf().disable()
                 .formLogin().disable()
                 .httpBasic().disable()
@@ -58,7 +62,8 @@ public class WebSecurityConfig {
                 .pathMatchers(HttpMethod.PUT).permitAll()
                 .pathMatchers(SWAGGER_WHITELIST).permitAll()
                 .anyExchange().authenticated()
-                .and().build();
+                .and()
+                .build();
     }
 }
 

@@ -24,32 +24,34 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @NotNull
+    @Column(name = "order_id")
     private String orderId;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     private TransactionStatus status;
 
-    @NotNull
+    @Column(name = "customer_id")
     private String customerId;
 
-    @NotNull
     @Email
+    @Column(name = "customer_email")
     private String customerEmail;
 
     private BigDecimal amount;
 
-    @NotNull
+    @Column(name = "product_name")
     private String productName;
 
-    @NotNull
+    @Column(name = "product_description")
     private String productDescription;
 
+    @Column(name = "meta_data")
     private String metaData;
 
+    @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt = LocalDateTime.now();
 
 }

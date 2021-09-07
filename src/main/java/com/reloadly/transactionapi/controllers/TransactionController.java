@@ -1,5 +1,6 @@
 package com.reloadly.transactionapi.controllers;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.reloadly.transactionapi.helpers.CustomException;
 import com.reloadly.transactionapi.helpers.Response;
 import com.reloadly.transactionapi.helpers.Validator;
@@ -37,9 +38,10 @@ public class TransactionController {
             @ApiResponse(responseCode = "201", description = "Transaction Created", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Response.class)) }),
             @ApiResponse(responseCode = "400", description = "Bad Request",  content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Response.class)) })
     })
-    public Mono<ResponseEntity<Response<TransactionResponse>>> createTransaction(@RequestBody TransactionRequest request, @CurrentSecurityContext(expression="authentication?.name") String loggedInEmail) throws CustomException {
+    public Mono<ResponseEntity<Response<TransactionResponse>>> createTransaction(@RequestBody TransactionRequest request) throws CustomException {
         Validator.validate(request);
-        return repository.create(request, loggedInEmail).map(x-> ResponseEntity.ok(Response.success(x)));
+
+        return repository.create(request).map(x-> ResponseEntity.ok(Response.success(x)));
     }
 
 

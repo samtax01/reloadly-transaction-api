@@ -1,6 +1,8 @@
 package com.reloadly.transactionapi.repositories;
 
 import com.reloadly.transactionapi.Seeder;
+import com.reloadly.transactionapi.configs.AuthenticationManager;
+import com.reloadly.transactionapi.helpers.AuthorisationHelper;
 import com.reloadly.transactionapi.helpers.CustomException;
 import com.reloadly.transactionapi.repositories.interfaces.ITransactionRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import reactor.test.StepVerifier;
+
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -28,10 +32,11 @@ public class TransactionRepositoryTest {
     @Test
     void canCreateTransaction() throws CustomException {
         // Arrange
-        // Act
         var data = Seeder.getTransactionRequest();
-        var Transaction = transactionRepository.create(data, data.getCustomerEmail());
+        AuthenticationManager.currentUser = new AuthorisationHelper.Payload(data.getCustomerEmail(), null, true, Collections.emptyList());
 
+        // Act
+        var Transaction = transactionRepository.create(data);
         StepVerifier
                 .create(Transaction)
                 .expectNextMatches(response ->
